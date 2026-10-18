@@ -1,0 +1,31 @@
+# Raw Databases & Excel Exports (Keep local only) (never commit raw data / Access databases)
+data/raw/*
+!data/raw/.gitkeep
+*.mdb
+*.accdb
+*.ldb
+*.laccdb
+
+# Keep processed folder structure
+data/processed/*
+!data/processed/.gitkeep
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+~$*.xlsx
