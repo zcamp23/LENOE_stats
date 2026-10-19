@@ -29,3 +29,6 @@ Thumbs.db
 .vscode/
 .idea/
 ~$*.xlsx
+
+# For now keeping the data dictionary local because i don't know if i should release it publicly
+#docs/data_dictionary.md
