@@ -54,6 +54,12 @@ def process_single_database(tables, db_label):
     classes = tables['Classes'].copy()
     valid = tables['Valid'].copy()
 
+    # Φιλτράρισμα μη-πραγματικών συμμετοχών που ξεκινούν με X,x (αγγλικό) ή Χ,χ (ελληνικό)
+    comp_num_str = entries['αρΑγωνιζόμενου'].fillna('').astype(str).str.strip()
+    # print(entries.loc[comp_num_str.str.match(r'^[XxΧχ]', na=False), 'αρΑγωνιζόμενου'].value_counts()) # UNCOMMENT την γραμμή ΓΙΑ ΝΑ ΚΑΝΕΙΣ ΤΕΣΤ ποιες τιμές (π.χ. X1, x247, Χ2) θα φύγουν από το dataset!
+    entries = entries[~comp_num_str.str.match(r'^[XxΧχ]', na=False)].copy()
+    
+
     # Καθαρισμός ονομάτων οδηγών
     drivers['Ονοματεπώνυμο'] = (
         drivers['Επώνυμο'].fillna('').astype(str).str.strip() + ' ' +
@@ -194,7 +200,10 @@ def main():
 
     master_results = pd.concat(all_results, ignore_index=True)
     master_entries = pd.concat(all_entries, ignore_index=True)
-    master_records = process_records_table(latest_tables) # Δεν χρειάζεται να ενωθεί από πολλές βάσεις, η πιο πρόσφατη βάση περιέχει όλο το ιστορικό ρεκόρ (2003–2026).
+    # Το master_records δεν χρειάζεται να ενωθεί από πολλές βάσεις, η πιο πρόσφατη βάση περιέχει όλο το ιστορικό ρεκόρ (2003–2026).
+    # Αφού κανουμε sort τα .mdb αλφαβητικά, όταν τελειώσει η παραπάνω for loop θα έχει μείνει η πιο πρόσφατη βάση!
+    # (για να δουλέψει σωστά πρέπει όλα τα mdb να έχουν όνομα της μορφής Drag2026.mdb, Drag2025.mdb ... Drag2003.mdb (σταθερό μοτίβο)).
+    master_records = process_records_table(latest_tables)
 
     # Αποθήκευση σε UTF-8 CSV με BOM (utf-8-sig) για τέλεια εμφάνιση ελληνικών παντού
     res_out = os.path.join(PROCESSED_DIR, "clean_results.csv")
