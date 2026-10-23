@@ -55,9 +55,9 @@ def process_single_database(tables, db_label):
     valid = tables['Valid'].copy()
 
     # Φιλτράρισμα μη-πραγματικών συμμετοχών που ξεκινούν με X,x (αγγλικό) ή Χ,χ (ελληνικό)
-    comp_num_str = entries['αρΑγωνιζόμενου'].fillna('').astype(str).str.strip()
-    # print(entries.loc[comp_num_str.str.match(r'^[XxΧχ]', na=False), 'αρΑγωνιζόμενου'].value_counts()) # UNCOMMENT την γραμμή ΓΙΑ ΝΑ ΚΑΝΕΙΣ ΤΕΣΤ ποιες τιμές (π.χ. X1, x247, Χ2) θα φύγουν από το dataset!
-    entries = entries[~comp_num_str.str.match(r'^[XxΧχ]', na=False)].copy()
+    competitor_num_str = entries['αρΑγωνιζόμενου'].fillna('').astype(str).str.strip()
+    # print(entries.loc[competitor_num_str.str.match(r'^[XxΧχ]', na=False), 'αρΑγωνιζόμενου'].value_counts()) # UNCOMMENT την γραμμή ΓΙΑ ΝΑ ΚΑΝΕΙΣ ΤΕΣΤ ποιες τιμές (π.χ. X1, x247, Χ2) θα φύγουν από το dataset!
+    entries = entries[~competitor_num_str.str.match(r'^[XxΧχ]', na=False)].copy()
     
 
     # Καθαρισμός ονομάτων οδηγών
