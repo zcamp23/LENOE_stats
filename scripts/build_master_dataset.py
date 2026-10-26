@@ -70,13 +70,14 @@ def process_single_database(tables, db_label):
     races_tracks = races.merge(tracks, on='αα_Πίστας', how='left')
     races_tracks['Ημερομηνία_Αγώνα'] = pd.to_datetime(races_tracks['Ημερομηνία'], errors='coerce')
     races_tracks['Ετος_Αγώνα'] = races_tracks['Ημερομηνία_Αγώνα'].dt.year.fillna(0).astype(int)
-    races_tracks['Race_UID'] = db_label + "_R" + races_tracks['ααΑγώνα'].astype(str)
+    # zfill(2): ΣΥΜΠΛΗΡΩΝΕΙ ΜΕ ΜΗΔΕΝΙΚΑ ΑΡΙΣΤΕΡΑ ΩΣΤΕ ΤΟ ΚΕΙΜΕΝΟ ΝΑ ΕΧΕΙ ΤΟΥΛΑΧΙΣΤΟΝ 2 ΨΗΦΙΑ (π.χ. "4" -> "04", "12" -> "12") γιατί αν έχει πάνω από 10 αγώνες το R10 βγαίνει στην αρχή
+    races_tracks['Race_UID'] = db_label + "_R" + races_tracks['ααΑγώνα'].astype(str).str.zfill(2)
 
     # 1. Καθαρισμός Πίνακα Συμμετοχών (Entries)
     clean_entries = (
         entries
         .merge(drivers[['ααΟδηγού', 'Ονοματεπώνυμο']], left_on='αρΟδηγού', right_on='ααΟδηγού', how='left')
-        .merge(races_tracks[['ααΑγώνα', 'Race_UID', 'Ημερομηνία_Αγώνα', 'ΠΙΣΤΑ', 'Σχόλια']], on='ααΑγώνα', how='left')
+        .merge(races_tracks[['ααΑγώνα', 'Race_UID', 'Ημερομηνία_Αγώνα', 'Ετος_Αγώνα', 'ΠΙΣΤΑ', 'Σχόλια']], on='ααΑγώνα', how='left')
     )
     clean_entries['DB_Source'] = db_label
 
@@ -86,7 +87,7 @@ def process_single_database(tables, db_label):
         .merge(sessions, on='ααΓύρου', how='left', suffixes=('', '_session'))
         .merge(entries, on='ααΣυμμετοχής', how='left', suffixes=('', '_entry'))
         .merge(drivers[['ααΟδηγού', 'Ονοματεπώνυμο']], left_on='αρΟδηγού', right_on='ααΟδηγού', how='left')
-        .merge(races_tracks[['ααΑγώνα', 'Race_UID', 'Ημερομηνία_Αγώνα', 'ΠΙΣΤΑ', 'Σχόλια']], 
+        .merge(races_tracks[['ααΑγώνα', 'Race_UID', 'Ημερομηνία_Αγώνα', 'Ετος_Αγώνα', 'ΠΙΣΤΑ', 'Σχόλια']], 
                left_on='ααΑγώνα', right_on='ααΑγώνα', how='left')
         .merge(valid, left_on='Εγκυρη', right_on='Κωδ_Εγκυρότητας', how='left', suffixes=('', '_valid'))
     )
@@ -133,8 +134,8 @@ def process_single_database(tables, db_label):
         (df['Εγκυρη'] == 0) &
         (df['Χρόνος18_sec'].between(0.8, 3.5)) &
         (
-            ((df['Απόσταση_Κατηγορίας_m'] == 400) & df['Χρόνος400_sec'].between(5.5, 20.0) & (df['Ταχύτητα400'] > 80)) |
-            ((df['Απόσταση_Κατηγορίας_m'] == 200) & df['Χρόνος200_sec'].between(3.5, 14.0) & (df['Ταχύτητα200'] > 60))
+            ((df['Απόσταση_Κατηγορίας_m'] == 400) & df['Χρόνος400_sec'].between(5.5, 20.0) & df['Ταχύτητα400'].between(80, 320)) |
+            ((df['Απόσταση_Κατηγορίας_m'] == 200) & df['Χρόνος200_sec'].between(3.5, 14.0) & df['Ταχύτητα200'].between(60, 280))
         )
     )
 
