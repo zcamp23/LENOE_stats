@@ -9,34 +9,40 @@
 ```text
 LENOE_stats/
 |
-├── dashboard/                              # Οδηγίες και αρχεία ενσωμάτωσης του Dashboard
+├── dashboard/
 |   └── embed_instructions.md               # Οδηγίες ενσωμάτωσης (iframe) σε ιστοσελίδα
 |
 ├── data/
 |   ├── raw/                                # Ακατέργαστα αρχεία βάσεων .mdb ανά έτος *(gitignored)*
-|   |   └── Drag2026.mdb                    # Βάση δεδομένων αγωνιστικής σεζόν
+|   |   └── Drag2026.mdb
 |   |
 |   └── processed/                          # Καθαρισμένα και ενοποιημένα αρχεία .csv *(gitignored)*
 |       ├── clean_entries.csv               # Καθαρές συμμετοχές αγώνων
 |       ├── clean_records.csv               # Ιστορικά ρεκόρ κατηγοριών (2003-2026)
 |       └── clean_results.csv               # Καθαρά περάσματα χρονομέτρησης (Timeslips)
 |
-├── docs/                                   # Τεκμηρίωση και προδιαγραφές του project
-|   ├── data_dictionary.md                  # Λεξικό δεδομένων και επεξήγηση στηλών βάσης *(gitignored)*
+├── docs/                                   
+|   ├── data_dictionary.md                  # *(gitignored)*
 |   └── PRD_LENOE_stats.md                  # Product Requirements Document (Πλάνο Project)
 |
-├── notebooks/                              # Jupyter Notebooks καθαρισμού και στατιστικής ανάλυσης
-|   └── 01_data_cleaning_and_validation.ipynb # Έλεγχος πληρότητας, Waterfall Audit & επικύρωση φίλτρων
+├── notebooks/                                # Jupyter Notebooks καθαρισμού και στατιστικής ανάλυσης
+|   ├── 01_data_cleaning_and_validation.ipynb 
+|   ├── 02_historical_trends_analysis.ipynb   
+|   └── 03_performance_and_track_analysis.ipynb
 |
 ├── outputs/
-|   └── figures/                            # Εξαγόμενα γραφήματα υψηλής ανάλυσης (.png)
-|       └── 01_data_cleaning_validation.png # Γράφημα ελέγχου ποιότητας και καθαρισμού δεδομένων
+|   └── figures/                            # Εξαγόμενα γραφήματα & πίνακες υψηλής ανάλυσης (.png)
+|       ├── 01_data_cleaning_validation.png   # Γράφημα ελέγχου ποιότητας και καθαρισμού δεδομένων
+|       ├── 02_historical_trends.png          # Γράφημα ιστορικής εξέλιξης ρεκόρ (2003-2026)
+|       ├── 02_class_records_board.png        # Πίνακας απόλυτων ρεκόρ ανά κατηγορία (Heads-Up)
+|       ├── 02_track_class_records.png        # Πίνακας κατοχής ρεκόρ κατηγοριών ανά πίστα
+|       └── 03_performance_and_track_analysis.png # Γράφημα παλινδρόμησης 18m-400m, Net RT & Διαδρομών
 |
-├── scripts/                                # Αυτοματοποιημένα scripts επεξεργασίας δεδομένων
+├── scripts/                                
 |   └── build_master_dataset.py             # Script εξαγωγής .mdb, καθαρισμού και ένωσης πινάκων
 |
-├── .gitignore                              # Κανόνες εξαίρεσης αρχείων από το Git
-├── README.md                               # Κεντρικός οδηγός περιγραφής και εκτέλεσης του project
+├── .gitignore
+├── README.md
 └── requirements.txt                        # Απαραίτητες βιβλιοθήκες Python
 ```
 
@@ -89,9 +95,6 @@ LENOE_stats/
 ### Βήμα 2: Έλεγχος Ποιότητας & Επικύρωση Δεδομένων (`notebooks/01_data_cleaning_and_validation.ipynb`)
 
 Το πρώτο Jupyter Notebook φορτώνει τα παραγόμενα αρχεία από το `data/processed/` και εκτελεί ελέγχους ακεραιότητας, πληρότητας και στατιστικής επίδρασης του καθαρισμού.
-
-#### Πώς τρέχει:
-Άνοιξε το αρχείο `notebooks/01_data_cleaning_and_validation.ipynb` στο VS Code (ή μέσω `jupyter notebook`) και εκτέλεσε τα 6 κελιά με τη σειρά.
 
 #### Τι περιλαμβάνει ανά κελί:
 1. **Κελί 1 - Φόρτωση & Διαστάσεις Datasets:** Φορτώνει τα `clean_results.csv`, `clean_entries.csv` και `clean_records.csv` και επιβεβαιώνει το πλήθος εγγραφών και στηλών.
