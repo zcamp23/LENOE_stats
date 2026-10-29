@@ -76,11 +76,11 @@ def load_dashboard_data():
         # NOTEBOOK 01: Data Cleaning & Validation
         # =====================================================================
         entries_per_race = (
-            entries.groupby(['Race_UID', 'ααΑγώνα', 'Ημερομηνία_Αγώνα', 'ΠΙΣΤΑ', 'Σχόλια'], dropna=False)['ααΣυμμετοχής']
+            entries[entries['ΠΙΣΤΑ'] != 'ΔΟΚΙΜΕΣ'].groupby(['Race_UID', 'ααΑγώνα', 'Ημερομηνία_Αγώνα', 'ΠΙΣΤΑ', 'Σχόλια'], dropna=False)['ααΣυμμετοχής']
             .count()
             .rename('Συμμετοχές (Entries)')
         )
-        runs_per_race = results.groupby('Race_UID')['ααΕπίδοσης'].count().rename('Σύνολο Περασμάτων (Results)')
+        runs_per_race = results[results['ΠΙΣΤΑ'] != 'ΔΟΚΙΜΕΣ'].groupby('Race_UID')['ααΕπίδοσης'].count().rename('Σύνολο Περασμάτων (Results)')
         clean_runs_per_race = (
             results[results['Is_Clean_Pass'] == True]
             .groupby('Race_UID')['ααΕπίδοσης']
@@ -97,7 +97,7 @@ def load_dashboard_data():
         race_audit['Καθαρά Περάσματα (Is_Clean_Pass)'] = race_audit['Καθαρά Περάσματα (Is_Clean_Pass)'].astype(int)
 
         validity_counts = (
-            results.groupby(['Εγκυρη', 'Περιγραφή_valid'], dropna=False)['ααΕπίδοσης']
+            results.groupby(['Περιγραφή_valid'], dropna=False)['ααΕπίδοσης']
             .count()
             .reset_index(name='Πλήθος')
         )
