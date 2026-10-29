@@ -2,15 +2,14 @@
 
 Σύστημα εξαγωγής, καθαρισμού και στατιστικής ανάλυσης των ιστορικών δεδομένων χρονομέτρησης (Timeslips, Συμμετοχές και Ρεκόρ) του Πανελλήνιου Πρωταθλήματος Dragster. Το project ενοποιεί τις βάσεις δεδομένων Microsoft Access (`.mdb`) ανά αγωνιστική σεζόν σε καθαρά σύνολα δεδομένων (`.csv`) και πραγματοποιεί ελέγχους εγκυρότητας και στατιστική ανάλυση απόδοσης.
 
+🔗 **Live Interactive Dashboard (Streamlit):** [Προβολή Διαδραστικού Dashboard](ΒΑΛΕ_ΕΔΩ_ΤΟ_STREAMLIT_URL_ΣΟΥ)
+
 ---
 
 ## Δομή του Project (Project Structure)
 
 ```text
 LENOE_stats/
-|
-├── dashboard/
-|   └── embed_instructions.md               # Οδηγίες ενσωμάτωσης (iframe) σε ιστοσελίδα
 |
 ├── data/
 |   ├── raw/                                # Ακατέργαστα αρχεία βάσεων .mdb ανά έτος *(gitignored)*
@@ -23,6 +22,7 @@ LENOE_stats/
 |
 ├── docs/                                   
 |   ├── data_dictionary.md                  # *(gitignored)*
+|   ├── lenoe2020.jpg                       # Λογότυπο ΛΕΝΟΕ
 |   └── PRD_LENOE_stats.md                  # Product Requirements Document (Πλάνο Project)
 |
 ├── notebooks/                                # Jupyter Notebooks καθαρισμού και στατιστικής ανάλυσης
@@ -31,17 +31,20 @@ LENOE_stats/
 |   └── 03_performance_and_track_analysis.ipynb
 |
 ├── outputs/
-|   └── figures/                            # Εξαγόμενα γραφήματα & πίνακες υψηλής ανάλυσης (.png)
-|       ├── 01_data_cleaning_validation.png   # Γράφημα ελέγχου ποιότητας και καθαρισμού δεδομένων
-|       ├── 02_historical_trends.png          # Γράφημα ιστορικής εξέλιξης ρεκόρ (2003-2026)
-|       ├── 02_class_records_board.png        # Πίνακας απόλυτων ρεκόρ ανά κατηγορία (Heads-Up)
-|       ├── 02_track_class_records.png        # Πίνακας κατοχής ρεκόρ κατηγοριών ανά πίστα
-|       └── 03_performance_and_track_analysis.png # Γράφημα παλινδρόμησης 18m-400m, Net RT & Διαδρομών
+|   ├── figures/                            # Εξαγόμενα γραφήματα & πίνακες υψηλής ανάλυσης (.png)
+|   |   ├── 01_data_cleaning_validation.png   # Γράφημα ελέγχου ποιότητας και καθαρισμού δεδομένων
+|   |   ├── 02_historical_trends.png          # Γράφημα ιστορικής εξέλιξης ρεκόρ (2003-2026)
+|   |   ├── 02_class_records_board.png        # Πίνακας απόλυτων ρεκόρ ανά κατηγορία (Heads-Up)
+|   |   ├── 02_track_class_records.png        # Πίνακας κατοχής ρεκόρ κατηγοριών ανά πίστα
+|   |   └── 03_performance_and_track_analysis.png # Γράφημα παλινδρόμησης 18m-400m, Net RT & Διαδρομών
+|   |
+|   └── tables/                             # Εξαγόμενοι συγκεντρωτικοί πίνακες (.csv / .json) για το Streamlit Dashboard
 |
 ├── scripts/                                
 |   └── build_master_dataset.py             # Script εξαγωγής .mdb, καθαρισμού και ένωσης πινάκων
 |
 ├── .gitignore
+├── app.py                                  # Streamlit Web App
 ├── README.md
 └── requirements.txt                        # Απαραίτητες βιβλιοθήκες Python
 ```
@@ -149,3 +152,23 @@ LENOE_stats/
 6. **Κελί 6 - Οπτικοποίηση Απόδοσης & Πίστας:** Παράγει και αποθηκεύει το γράφημα `outputs/figures/03_performance_and_track_analysis.png`:
 
 ![Στατιστική Ανάλυση Επιδόσεων, Χρόνων Αντίδρασης & Διαδρομών](outputs/figures/03_performance_and_track_analysis.png)
+
+---
+
+### Βήμα 5: Διαδραστικό Dashboard Παρουσίασης (`app.py` - Streamlit Web App)
+
+Το αρχείο `app.py` δημιουργεί μια διαδικτυακή εφαρμογή σε **Streamlit**, η οποία συγκεντρώνει και παρουσιάζει σε 4 θεματικές καρτέλες (Tabs) όλα τα αποτελέσματα, τους στατιστικούς ελέγχους και τα γραφήματα του project:
+1. **Επισκόπηση & KPIs:**
+2. **Καθαρισμός & Επικύρωση Δεδομένων (`Notebook 01`):**
+3. **Ιστορικά Ρεκόρ & Hall of Fame (`Notebook 02`):**
+4. **Ανάλυση Επιδόσεων, Αντίδρασης & Διαδρομών (`Notebook 03`):**
+
+#### Αρχιτεκτονική Προστασίας Πρωτογενών Δεδομένων (Dual-Mode Loading):
+* **Τοπική Εκτέλεση (Local Mode):** Όταν υπάρχουν τοπικά τα αρχεία `data/processed/clean_*.csv`, η εφαρμογή εκτελεί τους υπολογισμούς και εξάγει αυτόματα τους τελικούς συγκεντρωτικούς πίνακες στον φάκελο `outputs/tables/`.
+* **Cloud Deployment (Public Mode):** Όταν η εφαρμογή φιλοξενείται στο Streamlit Cloud (όπου ο φάκελος `data/` παραμένει *gitignored* για την προστασία των αναλυτικών δεδομένων), το `app.py` διαβάζει απευθείας τους προ-υπολογισμένους συγκεντρωτικούς πίνακες από τον φάκελο `outputs/tables/` και τα γραφήματα από το `outputs/figures/`.
+
+#### Πώς τρέχει τοπικά:
+Από τον κεντρικό φάκελο του project (`LENOE_stats`), εκτέλεσε στο τερματικό:
+```bash
+streamlit run app.py
+```
