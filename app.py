@@ -418,7 +418,7 @@ def load_dashboard_data():
             "race_audit", "validity_counts", "waterfall_df", "stats_comparison",
             "rec_stats_df", "top5_cars", "top5_bikes", "track_summary", "trend_df",
             "class_records_board", "track_class_records", "splits_stats", "reg_df",
-            "rt_summary", "rl_summary", "lane_df", "h2h_wins"
+            "rt_summary", "rl_summary", "lane_df", "h2h_wins", "top_bh_cars", "top_bh_bikes"
         ]
         tables = {}
         for name in table_names:
