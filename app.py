@@ -272,6 +272,36 @@ def load_dashboard_data():
             'Μηχανή 400m ET (s)': calc_stats(bikes_400['Χρόνος400_sec'])
         }).rename_axis('Στατιστικό').reset_index()
 
+        def get_top_backhalf(df, top_n):
+            # Κρατάμε το ταχύτερο (ελάχιστο) BackHalf_200_400_sec για κάθε μοναδικό οδηγό
+            # (Αν θέλεις όλα τα περάσματα ακόμα κι αν είναι του ίδιου οδηγού, αντικατάστησε τα 2 επόμενα lines με: sub = df.nsmallest(top_n, 'BackHalf_200_400_sec'))
+            best_per_driver_idx = df.groupby('Ονοματεπώνυμο')['BackHalf_200_400_sec'].idxmin()
+            sub = df.loc[best_per_driver_idx].nsmallest(top_n, 'BackHalf_200_400_sec')
+
+            cols_bh = [
+                'Ονοματεπώνυμο', 'Οχημα', 'ΠεριγραφήΚατηγορίας',
+                'BackHalf_200_400_sec', 'Χρόνος200_sec', 'Χρόνος400_sec',
+                'Speed_Gain_200_400_kmh', 'Ταχύτητα400', 'ΠΙΣΤΑ', 'Ημερομηνία_Αγώνα'
+            ]
+
+            out = (
+                sub[cols_bh]
+                .rename(columns={
+                    'Οχημα': 'Όχημα',
+                    'ΠεριγραφήΚατηγορίας': 'Κατηγορία',
+                    'BackHalf_200_400_sec': 'Back-Half 200-400m (s)',
+                    'Χρόνος200_sec': 'Χρόνος 200m (s)',
+                    'Χρόνος400_sec': 'Χρόνος 400m (s)',
+                    'Speed_Gain_200_400_kmh': 'Speed Gain 200–400 (+km/h)',
+                    'Ταχύτητα400': 'Ταχύτητα 400m (km/h)',
+                    'ΠΙΣΤΑ': 'Πίστα',
+                    'Ημερομηνία_Αγώνα': 'Ημερομηνία'
+                })
+                .fillna('-')
+                .reset_index(drop=True)
+            )
+            return out
+
         reg_rows = []
         for vtype, sub in [('Αυτοκίνητο', cars_400), ('Μηχανή', bikes_400)]:
             slope_18, _, r_18, p_18, _ = stats.linregress(sub['Χρόνος18_sec'], sub['Χρόνος400_sec'])
@@ -368,7 +398,9 @@ def load_dashboard_data():
             "rt_summary": rt_summary,
             "rl_summary": rl_summary,
             "lane_df": lane_df,
-            "h2h_wins": h2h_wins
+            "h2h_wins": h2h_wins,
+            "top_bh_cars": get_top_backhalf(cars_400, 20),
+            "top_bh_bikes": get_top_backhalf(bikes_400, 20)
         }
 
         # Αποθήκευση των συγκεντρωτικών πινάκων στο outputs/tables/
@@ -415,7 +447,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📊 1. Επισκόπηση & KPIs",
     "🗑️ 2. Καθαρισμός & Επικύρωση Δεδομένων",
     "🏆 3. Ιστορικά Ρεκόρ & Hall of Fame (2003–2026)",
-    "⚡ 4. Ανάλυση Επιδόσεων, Αντίδρασης & Διαδρομών"
+    "⚡ 4. Ανάλυση Επιδόσεων, Αντίδρασης & Διαδρομών (2021–2026)"
 ])
 
 # =========================================================================
@@ -522,6 +554,13 @@ with tab4:
 
     st.subheader("1. Περιγραφικά Στατιστικά Ενδιάμεσων Χρόνων (Splits 18m, 200m, Back-Half, 400m)")
     st.dataframe(tables["splits_stats"], width='content', hide_index=True)
+
+    st.subheader("1β. Top 20 Ταχύτεροι Χρόνοι 2ου Μισού Πίστας (Back-Half 200m–400m & Speed Gain)")
+    st.markdown("**Σημείωση:** Κρατάμε μόνο το **Καλύτερο Πέρασμα ανά ΜΟΝΑΔΙΚΟ Οδηγό (Unique Οδηγοί)** ώστε το Top 20 να παρουσιάζει τα 20 πιο δυνατά οχήματα/οδηγούς.")
+    st.markdown("**Top 20 Back-Half (200m–400m) - ΑΥΤΟΚΙΝΗΤΑ:**")
+    st.dataframe(tables["top_bh_cars"], width='content', height=350, hide_index=True)
+    st.markdown("**Top 20 Back-Half (200m–400m) - ΜΗΧΑΝΕΣ:**")
+    st.dataframe(tables["top_bh_bikes"], width='content', height=350, hide_index=True)
 
     st.subheader("2. Συσχέτιση & Γραμμική Παλινδρόμηση 18m (60ft) vs 400m ET")
     st.dataframe(tables["reg_df"], width='content', hide_index=True)
