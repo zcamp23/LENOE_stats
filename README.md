@@ -2,7 +2,7 @@
 
 Σύστημα εξαγωγής, καθαρισμού και στατιστικής ανάλυσης των ιστορικών δεδομένων χρονομέτρησης (Timeslips, Συμμετοχές και Ρεκόρ) του Πανελλήνιου Πρωταθλήματος Dragster. Το project ενοποιεί τις βάσεις δεδομένων Microsoft Access (`.mdb`) ανά αγωνιστική σεζόν σε καθαρά σύνολα δεδομένων (`.csv`) και πραγματοποιεί ελέγχους εγκυρότητας και στατιστική ανάλυση απόδοσης.
 
-🔗 **Live Interactive Dashboard (Streamlit):** [Προβολή Διαδραστικού Dashboard](ΒΑΛΕ_ΕΔΩ_ΤΟ_STREAMLIT_URL_ΣΟΥ)
+🔗 **Live Interactive Dashboard (Streamlit):** [Προβολή Διαδραστικού Dashboard](https://lenoe-dragster-stats.streamlit.app/)
 
 ---
 
